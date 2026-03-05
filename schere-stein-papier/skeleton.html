@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schere Stein Papier</title>
+</head>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        width: 100%;
+    }
+
+    main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+</style>
+<body>
+    <main>
+        <h1>Schere Stein Papier</h1>
+
+        <!-- Die Punktestände sollen sich automatisch aktualisieren -->
+        <span id="computer-wins">Computer: 0</span>
+        <span id="player-wins">Player: 0</span>
+
+        <div class="button-group">
+            <!-- 3 buttons für die auswahl Schere, Stein, Papier -->
+            <!-- Beim clicken soll die Funktion "play" aufgerufen werden -->
+        </div>
+
+        <!-- Zeige das Resultat an "🪨 vs ✂️, Spieler gewinnt!" -->
+        <span id="result"></span>
+
+    </main>
+</body>
+<script>
+    function play(choice) {
+       const options = ['✂️', '🪨', '📄'];
+
+       // Der Computer wählt zufällig eine Option aus
+       // Vergleiche die Auswahl des Computers mit der Auswahl des Spielers und bestimme den Gewinner
+
+       // Zeige die Auswahl des Computers und den Gewinner an
+       // Speichere wer wie oft gewonnen hat und aktualisiere die Punktestände entsprechend
+    }
+</script>
+</html>

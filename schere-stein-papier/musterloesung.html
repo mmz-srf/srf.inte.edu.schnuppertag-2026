@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schere Stein Papier</title>
+</head>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        width: 100%;
+        background-color: rgb(33, 33, 33);
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+
+    main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    h1 {
+        font-size: 3rem;
+    }
+
+    .button-group {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        gap: 20px;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 3.2rem;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: transparent;
+        color: white;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    button:hover {
+        border: 1px solid rgba(255, 255, 255, 0.599);
+    }
+
+    #computer-wins, #player-wins {
+        font-size: 18px;
+    }
+
+    #computer-wins {
+        margin-top: 5px;
+    }
+    #player-wins {
+        margin-bottom: 40px;
+    }
+
+    .modal {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.819);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        font-size: 4.3rem;
+        transition: all 0.3s ease-in-out;
+        opacity: 0;
+    }
+
+    .modal-items {
+        display: flex;
+        flex-direction: row;
+        gap: 8rem;
+    }
+
+    .animate {
+        animation: merge 0.5s forwards;
+    }
+
+    @keyframes merge {
+        0% {
+            gap: 8rem;
+        }
+        100% {
+            gap: 0;
+        }
+    }
+</style>
+<body>
+    <main>
+        <h1>Schere Stein Papier</h1>
+
+        <span id="computer-wins">🖥️ Computer: 0</span>
+        <span id="player-wins">🧑 Player: 0</span>
+
+        <div class="button-group">
+            <button onclick="play('✂️')">✂️</button>
+            <button onclick="play('🪨')">🪨</button>
+            <button onclick="play('📄')">📄</button>
+        </div>
+
+        <br>
+
+        <span id="computer"></span>
+
+        <br>
+
+        <span id="result"></span>
+    </main>
+
+    <div class="modal"></div>
+    <div class="streak">Streak 🔥 0/0</div>
+</body>
+<script>
+    const resultDisplay = document.getElementById('result');
+    const computerDisplay = document.getElementById('computer');
+    const computerWinsDisplay = document.getElementById('computer-wins');
+    const playerWinsDisplay = document.getElementById('player-wins');
+    const modal = document.querySelector('.modal');
+    const streakDisplay = document.querySelector('.streak');
+
+    let playerWins = 0;
+    let computerWins = 0;
+    let winningItem = '';
+    let streak = 0;
+    let highestStreak = 0;
+    let lastWinner = '';
+
+    function play(choice) {
+        const options = ['✂️', '🪨', '📄'];
+        const computerChoice = options[Math.floor(Math.random() * options.length)];
+
+        computerDisplay.textContent = `Computer wählt: ${computerChoice}`;
+
+        let result;
+        if (choice === computerChoice) {
+            result = "Unentschieden!";
+            winningItem = choice;
+        } else if (
+            (choice === '✂️' && computerChoice === '📄') ||
+            (choice === '🪨' && computerChoice === '✂️') ||
+            (choice === '📄' && computerChoice === '🪨')
+        ) {
+            result = "Du gewinnst!";
+            playerWins++;
+            winningItem = choice;
+            if (lastWinner === 'player') {
+                streak++; // Spieler gewinnt erneut, also Streak erhöhen
+            } else {
+                streak = 1;
+                lastWinner = 'player';
+            }
+        } else {
+            result = "Computer gewinnt!";
+            lastWinner = 'computer';
+            computerWins++;
+            streak = 0; // Spieler verliert, also Streak zurücksetzen
+            winningItem = computerChoice;
+        }
+
+        playAnimation(computerChoice, choice, result);
+
+        if (streak > highestStreak) {
+            highestStreak = streak;
+        }
+        streakDisplay.textContent = `Streak 🔥 ${streak}/${highestStreak}`;
+        computerWinsDisplay.textContent = `🖥️ Computer: ${computerWins}`;
+        playerWinsDisplay.textContent = `🧑 Player: ${playerWins}`;
+        resultDisplay.textContent = `${choice} vs ${computerChoice} - ${result}`;
+    }
+
+    function playAnimation(computerChoice, playerChoice, result) {
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            modal.style.opacity = 1;
+        }, 10);
+        modal.innerHTML = `
+            <div class="modal-items">
+                <div>${playerChoice}</div>
+                <div>${computerChoice}</div>
+            </div>
+        `;
+
+        const modalItems = document.querySelector('.modal-items');
+
+        setTimeout(() => {
+            modalItems.classList.add('animate');
+            setTimeout(() => {
+                modal.innerHTML = `
+                    <div>${winningItem}</div>
+                    <div>${result}</div>
+                `;
+            }, 250);
+        }, 500);
+
+        setTimeout(() => {
+            modal.style.display = 'none';
+            modal.style.opacity = 0;
+            modalItems.classList.remove('animate');
+        }, 2000);
+    }
+</script>
+</html>
