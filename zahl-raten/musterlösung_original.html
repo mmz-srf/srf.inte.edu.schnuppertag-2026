@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zahl raten</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0d1117;
+      color: #e0e0ff;
+      min-height: 100vh;
+      margin: 0;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    h1 { color: #00d4ff; margin-bottom: 1.5rem; }
+    .container {
+      max-width: 1254px;
+      margin: 0 auto;
+      background: rgba(30,35,50,0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    input[type="number"] {
+      width: 67%;
+      padding: 14px;
+      font-size: 1.4rem;
+      text-align: center;
+      border: 2px solid #444;
+      border-radius: 12px;
+      background: #1a1a2e;
+      color: white;
+      margin: 1rem 0;
+    }
+    button {
+      padding: 14px 32px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 12px 8px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    #raten-btn {
+      background: #00d4ff;
+      color: black;
+    }
+    #neustart-btn {
+      background: #444;
+      color: #ccc;
+      display: none;
+    }
+    #meldung {
+      width: 67%;
+      font-size: 1.4rem;
+      min-height: 2rem;
+      padding: 1rem;
+      border-radius: 12px;
+      margin: 1.5rem auto;
+    }
+    #info {
+      font-size: 1.1rem;
+      color: #aaa;
+      margin-top: 1.5rem;
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Zahl raten (1–100)</h1>
+  <p>Ich habe mir eine Zahl ausgedacht. Rate sie!</p>
+
+  <input type="number" id="guess" min="1" max="100" placeholder="Deine Zahl" autofocus>
+
+  <div>
+    <button id="raten-btn">Raten!</button>
+    <button id="neustart-btn">Nochmal spielen</button>
+  </div>
+
+  <div id="meldung"></div>
+
+  <div id="info">
+    Bereits geraten: <span id="geraten">-</span><br>
+    Versuche: <span id="versuche">0</span>
+  </div>
+</div>
+
+<script>
+  let geheimzahl = Math.floor(Math.random() * 100) + 1;
+  let versuche = 0;
+  let gerateneZahlen = new Set();
+
+  const guessInput   = document.getElementById("guess");
+  const ratenBtn     = document.getElementById("raten-btn");
+  const neustartBtn  = document.getElementById("neustart-btn");
+  const meldung      = document.getElementById("meldung");
+  const geratenSpan  = document.getElementById("geraten");
+  const versucheSpan = document.getElementById("versuche");
+
+  // Enter-Taste = Raten
+  guessInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      raten();
+    }
+  });
+
+  ratenBtn.addEventListener("click", raten);
+  neustartBtn.addEventListener("click", neustart);
+
+  function raten() {
+    const zahl = Number(guessInput.value.trim());
+
+    // Validierung
+    if (!zahl || zahl < 1 || zahl > 100) {
+      meldung.textContent = "Bitte eine Zahl zwischen 1 und 100 eingeben!";
+      meldung.className = "error";
+      return;
+    }
+
+    if (gerateneZahlen.has(zahl)) {
+      meldung.textContent = `Die Zahl ${zahl} hast du schon probiert!`;
+      meldung.className = "error";
+      guessInput.value = "";
+      guessInput.focus();
+      return;
+    }
+
+    gerateneZahlen.add(zahl);
+    versuche++;
+    versucheSpan.textContent = versuche;
+    geratenSpan.textContent = Array.from(gerateneZahlen).sort((a,b)=>a-b).join(", ") || "-";
+
+    if (zahl === geheimzahl) {
+      meldung.textContent = `Richtig! 🎉 Die Zahl war ${geheimzahl}. Du hast ${versuche} Versuche gebraucht.`;
+      meldung.className = "success";
+      ratenBtn.disabled = true;
+      guessInput.disabled = true;
+      neustartBtn.style.display = "inline-block";
+    } else if (zahl < geheimzahl) {
+      meldung.textContent = `Zu klein! ↑`;
+      meldung.className = "hint";
+    } else {
+      meldung.textContent = `Zu gross! ↓`;
+      meldung.className = "hint";
+    }
+
+    guessInput.value = "";
+    guessInput.focus();
+  }
+
+  function neustart() {
+    geheimzahl = Math.floor(Math.random() * 100) + 1;
+    versuche = 0;
+    gerateneZahlen.clear();
+
+    versucheSpan.textContent = "0";
+    geratenSpan.textContent = "-";
+    meldung.textContent = "";
+    meldung.className = "";
+    guessInput.value = "";
+    guessInput.disabled = false;
+    ratenBtn.disabled = false;
+    neustartBtn.style.display = "none";
+
+    guessInput.focus();
+  }
+</script>
+</body>
+</html>

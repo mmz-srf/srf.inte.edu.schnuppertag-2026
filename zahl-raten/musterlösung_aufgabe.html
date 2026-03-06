@@ -1,0 +1,86 @@
+<!-- Musterlösung – nur zum Vergleichen, nachdem du fertig bist! -->
+
+<!-- Im <body> unter dem <p>-Tag: -->
+<input type="number" id="guess" min="1" max="100" placeholder="Deine Zahl" autofocus>
+
+<button id="raten-btn">Raten!</button>
+
+<div id="meldung">Viel Erfolg! 😄</div>
+
+<!-- Bonus (nachdem das Basis-Spiel läuft): -->
+<button id="neustart-btn" style="display:none;">Nochmal spielen</button>
+
+<div id="info">
+  Bereits geraten: <span id="geraten">-</span><br>
+  Versuche: <span id="versuche">0</span>
+</div>
+
+<!-- Im <script>-Tag: -->
+let geheimzahl = Math.floor(Math.random() * 100) + 1;
+let versuche = 0;
+
+<!-- raten()-Funktion (komplett): -->
+function raten() {
+const zahl = Number(guessInput.value.trim());
+
+if (!zahl || zahl < 1 || zahl > 100) {
+meldung.textContent = "Bitte eine Zahl zwischen 1 und 100 eingeben!";
+meldung.className = "error";
+return;
+}
+
+versuche++;
+versucheSpan.textContent = versuche;
+
+if (zahl === geheimzahl) {
+meldung.textContent = `Richtig! 🎉 Die Zahl war ${geheimzahl}. Du hast ${versuche} Versuche gebraucht.`;
+meldung.className = "success";
+ratenBtn.disabled = true;
+guessInput.disabled = true;
+neustartBtn.style.display = "inline-block";
+} else if (zahl < geheimzahl) {
+meldung.textContent = `Zu klein! ↑`;
+meldung.className = "hint";
+} else {
+meldung.textContent = `Zu gross! ↓`;
+meldung.className = "hint";
+}
+
+guessInput.value = "";
+guessInput.focus();
+}
+
+<!-- neustart()-Funktion (Bonus): -->
+function neustart() {
+geheimzahl = Math.floor(Math.random() * 100) + 1;
+versuche = 0;
+versucheSpan.textContent = "0";
+geratenSpan.textContent = "-";
+meldung.textContent = "Neues Spiel! Viel Erfolg 😄";
+meldung.className = "";
+guessInput.value = "";
+guessInput.disabled = false;
+ratenBtn.disabled = false;
+neustartBtn.style.display = "none";
+guessInput.focus();
+}
+
+<!-- CSS-Beispiel-Lösungen (nur als Tipp): -->
+input[type="number"] {
+width: 80%;
+padding: 16px;
+font-size: 1.6rem;
+border: 3px solid #444;
+border-radius: 12px;
+background: #1a1a2e;
+color: white;
+}
+
+button:hover {
+transform: translateY(-3px);
+box-shadow: 0 6px 20px rgba(0,212,255,0.4);
+}
+
+.error   { background: #ff4d4d; color: white; }
+.hint    { background: #ffcc00; color: black; }
+.success { background: #28a745; color: white; font-weight: bold; }
