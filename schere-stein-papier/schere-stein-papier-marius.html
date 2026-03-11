@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schere Stein Papier</title>
+</head>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        width: 100%;
+        background-color: #494949;
+        color: white;
+        font-family: "Arial Nova";
+    }
+
+    main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    h1 {
+        color: cadetblue;
+    }
+    span {
+        margin-bottom: 5px;
+    }
+    button {
+        padding: 20px;
+        font-size: 18px;
+        background-color: aquamarine;
+        transition: background-color 0.3s ease-in-out;
+    }
+button:hover{
+    cursor: pointer;
+    background-color: aqua;
+}
+
+.button-group {
+    margin-bottom: 10px;
+}
+    .modal {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.819);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        font-size: 4.3rem;
+        transition: all 0.3s ease-in-out;
+        opacity: 0;
+    }
+
+    .modal-items {
+        display: flex;
+        flex-direction: row;
+        gap: 8rem;
+    }
+
+    .animate {
+        animation: merge 0.5s forwards;
+    }
+
+    @keyframes merge {
+        0% {
+            gap: 8rem;
+        }
+        100% {
+            gap: 0;
+        }
+    }
+</style>
+<body>
+    <main>
+        <h1>Schere Stein Papier</h1>
+
+        <!-- Die Punktestände sollen sich automatisch aktualisieren -->
+        <span id="computer-wins">Computer: 0</span>
+        <span id="player-wins">Player: 0</span>
+
+        <div class="button-group">
+            <button onclick="play('🪨')">🪨</button>
+            <button onclick="play('✂️')">✂️</button>
+            <button onclick="play('📄')">📄</button>
+            <!-- 3 buttons für die auswahl Schere, Stein, Papier -->
+            <!-- Beim clicken soll die Funktion "play" aufgerufen werden -->
+        </div>
+
+        <!-- Zeige das Resultat an "🪨 vs ✂️, Spieler gewinnt!" -->
+        <span id="computer-choice"></span>
+        <span id="result"></span>
+        <span id="streaks">streak: 0/0</span>
+
+        <div class="modal"></div>
+
+    </main>
+</body>
+<script>
+    const computerDisplay = document.getElementById("computer-choice");
+    const resultDisplay = document.getElementById("result");
+    const computerWinDisplay = document.getElementById("computer-wins");
+    const playerWinDisplay = document.getElementById("player-wins");
+    const streakDisplay = document.getElementById("streaks");
+    const modal = document.querySelector(".modal");
+
+
+    let computerWins = 0;
+    let playerWins = 0;
+    let streak = 0;
+    let highestStreak = 0;
+    let winningItem = "";
+
+    function play(choice) {
+       const options = ['✂️', '🪨', '📄'];
+        const computerChoice = options[Math.floor(Math.random() * options.length)];
+
+       console.log(choice);
+       console.log(computerChoice);
+
+       computerDisplay.textContent = "Computer wählt: " + computerChoice;
+
+       let result;
+       if (choice === computerChoice){
+           result = "Unentschieden"
+       }else if(
+           (choice === '✂️'&&computerChoice === '📄')||
+           (choice === '🪨'&&computerChoice === '✂️')||
+           (choice === '📄'&&computerChoice === '🪨')){
+           playerWins++;
+
+           streak++;
+           winningItem = choice;
+
+            result = "Du gewinnst";
+       }else {
+           result = "Computer gewinnt"
+           computerWins++;
+
+           streak = 0;
+
+           winningItem = computerChoice;
+       }
+       if (streak>highestStreak){
+           highestStreak = streak;
+       }
+
+       resultDisplay.textContent = choice + " vs " + computerChoice + " - " + result;
+        computerWinDisplay.textContent = "Computer: " + computerWins;
+        playerWinDisplay.textContent = "Player: " + playerWins;
+        streakDisplay.textContent = "streak: " + streak + "/" + highestStreak;
+
+       // Der Computer wählt zufällig eine Option aus
+       // Vergleiche die Auswahl des Computers mit der Auswahl des Spielers und bestimme den Gewinner
+
+       // Zeige die Auswahl des Computers und den Gewinner an
+       // Speichere wer wie oft gewonnen hat und aktualisiere die Punktestände entsprechend
+        modal.style.display = "flex";
+        modal.style.opacity = 1;
+        modal.innerHTML = `
+            <div class="modal-items">
+            <span>${choice}</span>
+            <span>${computerChoice}</span>
+</div>
+        `;
+        const modalItems = document.querySelector(".modal-items");
+        setTimeout(() =>{
+            modalItems.classList.add("animate");
+            setTimeout(()=>{
+                modal.innerHTML=`
+                    <span>${winningItem}</span>
+                    <span>${result}</span>
+                `;
+            }, 250)
+        }, 500)
+
+        setTimeout(()=>{
+            modal.style.display="none";
+            modal.style.opacity=0;
+            modalItems.classList.remove("animate");
+        }, 2000)
+
+    }
+
+</script>
+</html>
