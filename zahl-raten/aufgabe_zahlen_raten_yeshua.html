@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zahl raten – Deine erste App!</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0d1117;
+      color: #e0e0ff;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 1700px;
+      margin: 0 auto;
+      background: rgba(30,35,50,0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    h1 {
+      color: #00d4ff;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ────────────────────────────────────────────── */
+    /* DEINE CSS-AUFGABEN – fang hier an!             */
+    /* ────────────────────────────────────────────── */
+
+    /* TODO A: Style das Eingabefeld – mach es grösser, zentriert, mit dickem Rand */
+    /* Schreibe hier direkt unter dieser Zeile: */
+    input[type="number"] {
+      width: 67%;
+      padding: 14px;
+      font-size: 1.4rem;
+      text-align: center;
+      border: 2px solid #444;
+      border-radius: 12px;
+      background: #1a1a2e;
+      color: white;
+      margin: 1rem 0;
+    }
+    /* TODO B: Mach den Raten-Button blau und den Neustart-Button grau */
+    /* Schreibe hier direkt unter dieser Zeile: */
+    button {
+      padding: 14px 32px;
+      font-size: 1.1rem;
+      margin: 12px 8px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    #raten-btn {
+      color: black;
+      background: #00d4ff;
+    }
+    #neustart-btn {
+      /* Dein Code hier... */
+    }
+
+    #meldung {
+      width: 60%;
+      font-size: 1.4rem;
+      min-height: 2rem;
+      padding: 1rem;
+      color: white;
+      margin: 1.5rem auto;
+    }
+
+
+
+    /* TODO D: Buttons sollen beim Hover heller werden und ein bisschen nach oben gehen */
+    /* Schreibe hier direkt unter dieser Zeile: */
+    button:hover {
+      /* Dein Code hier... */
+    }
+
+    /* TODO E: Auf kleinen Bildschirmen (Handy) soll alles grösser und schmaler werden */
+    /* Schreibe hier ganz unten im <style>-Tag: */
+    /* @media (max-width: 500px) { ... } */
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Zahl raten (1–100)</h1>
+  <p>Ich denke an eine Zahl zwischen 1 und 100. Rate sie!</p>
+
+  <!-- ────────────────────────────────────────────── -->
+  <!-- DEINE HTML-AUFGABEN – fang hier an!             -->
+  <!-- ────────────────────────────────────────────── -->
+
+  <!-- TODO 1: Erstelle das Eingabefeld für die geratene Zahl -->
+  <input type="number" id="guess"min="1"max="100"placeholder="deine zahl" autofocus>
+
+
+  <!-- TODO 2: Erstelle den Raten-Button (id = "raten-btn") -->
+  <div>
+  <button id="raten-btn">Raten</button>
+    <button id="neustart-btn">Erneut Spielen</button>
+  </div>
+  <!-- TODO 3: Erstelle das Meldungsfeld (wo später "Zu klein!", "Richtig!" usw. steht) (id = "meldung") -->
+  <div id="meldung"></div>
+
+  <div id="info">
+    Bereits geraten: <span id="geraten">-</span><br>
+    Versuche: <span id="versuche">0</span>
+  </div>
+
+
+  <!-- TODO 4 (Bonus): Erstelle den Neustart-Button (wird später sichtbar gemacht) -->
+  <!-- <button id="neustart-btn" style="display:none;">Nochmal spielen</button> -->
+
+  <!-- TODO 5 (Bonus): Erstelle den Info-Bereich für Versuche und geratene Zahlen -->
+  <!-- <div id="info"> -->
+  <!--   Bereits geraten: <span id="geraten">-</span><br> -->
+  <!--   Versuche: <span id="versuche">0</span> -->
+  <!-- </div> -->
+
+</div>
+
+<script>
+  // ──────────────────────────────────────────────
+  // DEINE JAVASCRIPT-AUFGABEN – nur die Basics!
+  // ──────────────────────────────────────────────
+
+  // TODO 6: Erstelle eine Zufallszahl zwischen 1 und 100
+  let geheimzahl = Math.floor(Math.random() * 100) + 1;
+  let versuche = 0;
+  let gerateneZahlen = new Set();
+
+
+  // TODO 7: Variable für die Anzahl der Versuche (starte bei 0)
+
+  // Elemente holen – erst nachdem du sie im HTML erstellt hast!
+  const guessInput = document.getElementById("guess");
+  const ratenBtn = document.getElementById("raten-btn");
+  const meldung = document.getElementById("meldung");
+  const neustartBtn = document.getElementById("neustart-btn");
+  const geratenSpan = document.getElementById("geraten");
+  const versucheSpan = document.getElementById("versuche")
+
+  // Enter-Taste ruft raten() auf (schon fertig)
+  guessInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      raten();
+    }
+  });
+
+  ratenBtn.addEventListener("click", raten);
+  neustartBtn.addEventListener("click", neustart);
+
+  function raten() {
+    const zahl = Number(guessInput.value.trim());
+
+    // TODO 8: Prüfe, ob die Zahl gültig ist (1 bis 100, nicht leer)
+    if (!zahl || zahl < 1 || zahl > 100) {
+      meldung.textContent = "Bitte eine Zahl zwischen 1 und 100 eingeben!";
+      meldung.className = "error";
+      return;
+    }
+
+    if (gerateneZahlen.has(zahl)) {
+      meldung.textContent = `Die Zahl ${zahl} hast du schon probiert`;
+      meldung.className = "error";
+      guessInput.value = "";
+      guessInput.focus();
+      return;
+    }
+
+    gerateneZahlen.add(zahl);
+    versuche++;
+    versucheSpan.textContent = versuche;
+    geratenSpan.textContent = Array.from(gerateneZahlen).sort((a,b)=>a-b).join(", ") || "-";
+
+    // TODO 9: Vergleiche mit geheimzahl
+    if (zahl === geheimzahl) {
+      meldung.textContent = `Richtig Die Zahl war ${geheimzahl}. Du hast ${versuche} Versuche gebraucht.`;
+      meldung.className = "success";
+      ratenBtn.disabeled = true;
+      guessInput.disabeled = true;
+      neustartBtn.style.display = "inline-block";
+    } else if (zahl < geheimzahl) {
+      meldung.textContent = `Zu klein`;
+      meldung.className = "hint";
+    } else {
+      meldung.textContent = `Zu gross`;
+      meldung.className = "hint";
+    }
+
+    // Leere das Feld und setze Fokus zurück
+    guessInput.value = "";
+    guessInput.focus();
+  }
+
+  function neustart() {
+   // window.location.reload()
+    geheimzahl = Math.floor(Math.random() * 100) + 1;
+    versuche = 0;
+    gerateneZahlen.clear();
+    versucheSpan.textContent = "0";
+    geratenSpan.textContent = "-";
+    meldung.textContent = "";
+    meldung.className = "";
+    guessInput.value = "";
+    guessInput.disabled = false;
+    ratenBtn.disabled = false;
+    neustartBtn.style.display = "none";
+    guessInput.focus();
+  }
+  // ──────────────────────────────────────────────
+  // BONUS-AUFGABEN – erst wenn das Basis-Spiel läuft
+  // ──────────────────────────────────────────────
+  // Bonus 1: Füge den Neustart-Button ein und mach eine Funktion neustart()
+  // Bonus 2: Zeige die Anzahl der Versuche an (#versuche)
+  // Bonus 3: Verhindere doppelte Zahlen (nutze ein Set)
+  // Bonus 4: Zeige alle bisher geratenen Zahlen (#geraten)
+  // Bonus 5: Mach einen Reset bei Neustart (neue Zufallszahl, alles zurück)
+
+  // Viel Spass, Yeshua!
+  // Reihenfolge:
+  // 1. HTML-TODOS 1–3 → Basis-Felder & Button erscheinen
+  // 2. JS-TODOS 6–9 → Das Spiel funktioniert schon!
+  // 3. CSS-TODOS A–E → Mach es schön!
+  // 4. Bonus-TODOS → Mach es richtig cool!
+</script>
+</body>
+</html>
