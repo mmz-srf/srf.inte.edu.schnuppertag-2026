@@ -19,7 +19,15 @@
 let geheimzahl = Math.floor(Math.random() * 100) + 1;
 let versuche = 0;
 
+<!-- Bonus: Diese Zeilen erst einfügen, wenn Neustart-Button und Info-Bereich im HTML existieren! -->
+<!-- (direkt unter den anderen const-Zeilen) -->
+const neustartBtn  = document.getElementById("neustart-btn");
+const geratenSpan  = document.getElementById("geraten");
+const versucheSpan = document.getElementById("versuche");
+neustartBtn.addEventListener("click", neustart);
+
 <!-- raten()-Funktion (komplett): -->
+<!-- Die Zeilen mit "Bonus" erst einfügen, wenn die Bonus-Elemente oben existieren – sonst gibt es einen Fehler! -->
 function raten() {
 const zahl = Number(guessInput.value.trim());
 
@@ -30,14 +38,14 @@ return;
 }
 
 versuche++;
-versucheSpan.textContent = versuche;
+versucheSpan.textContent = versuche; // Bonus 2
 
 if (zahl === geheimzahl) {
 meldung.textContent = `Richtig! 🎉 Die Zahl war ${geheimzahl}. Du hast ${versuche} Versuche gebraucht.`;
 meldung.className = "success";
 ratenBtn.disabled = true;
 guessInput.disabled = true;
-neustartBtn.style.display = "inline-block";
+neustartBtn.style.display = "inline-block"; // Bonus 1
 } else if (zahl < geheimzahl) {
 meldung.textContent = `Zu klein! ↑`;
 meldung.className = "hint";
@@ -49,6 +57,8 @@ meldung.className = "hint";
 guessInput.value = "";
 guessInput.focus();
 }
+
+<!-- Bonus 3 + 4 (doppelte Zahlen verhindern, geratene Zahlen anzeigen): siehe musterlösung_original.html -->
 
 <!-- neustart()-Funktion (Bonus): -->
 function neustart() {
